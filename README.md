@@ -47,8 +47,8 @@ npm i react-router-dom@5.3.4
 
 Your finished project must include all of the following requirements:
 
-- [ ] The `App` component is wrapped in `BrowserRouter` - complete this requirement in the `index.js` module
-- [ ] A homepage that has a "/" route and links to your form (button, nav bar, or any other type of link is acceptable but must have an id of "order-pizza")
+- [x] The `App` component is wrapped in `BrowserRouter` - complete this requirement in the `index.js` module
+- [x] A homepage that has a "/" route and links to your form (button, nav bar, or any other type of link is acceptable but must have an id of "order-pizza")
 - [ ] A order form that has a "/pizza" route and shows the form
 - [ ] A form with an id of "pizza-form"
 - [ ] A name text input field with an id of "name-input"
@@ -104,8 +104,8 @@ After finishing your required elements, you can push your work further. These go
 
 Demonstrate your understanding of this sprint's concepts by answering the following free-form questions. Edit this document to include your answers after each question.
 
-1. How would you explain form validation to someone who has never programmed before?
-1. In 1-2 sentences, define end to end testing.
+1. How would you explain form validation to someone who has never programmed before? Form validation is a process that checks if the information entered by a user into a form (such as on a website or an app) meets certain criteria or rules. It ensures that the data is correct, complete, and in the proper format before it's submitted and used by the system.
+1. In 1-2 sentences, define end to end testing. End-to-end testing is a comprehensive testing method that checks an entire system, application, or workflow from start to finish. It simulates real user scenarios and verifies that the system functions as intended, ensuring all components work together as expected.
 
 ## FAQs
 

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { orderValidationSchema } from './validationSchema';
+import axios from 'axios';
 
 const initialFormValues = {
   name: '',
@@ -18,13 +19,33 @@ function OrderForm() {
   const [disabledButton, setDisabledButton] = useState(true);
   const [errors, setErrors] = useState(initialFormErrors);
 
+  const formSubmit = (e) => {
+    e.preventDefault();
+    console.log('submitted!');
+    axios
+      .post('https://reqres.in/api/orders', formValues)
+      .then((res) => {
+        console.log('success', res);
+      })
+      .catch((err) => console.log(err.response));
+  };
+
   const onFormChange = (e) => {
-    setFormValues({ ...formValues, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    orderValidationSchema
+      .validateAt(name, { ...formValues, [name]: value })
+      .then(() => {
+        setErrors({ ...errors, [name]: '' });
+      })
+      .catch((error) => {
+        setErrors({ ...errors, [name]: error.errors[0] });
+      });
+    setFormValues({ ...formValues, [name]: value });
   };
 
   useEffect(() => {
-    orderValidationSchema.isValid(formValues).then((res) => {
-      setDisabledButton(!res);
+    orderValidationSchema.isValid(formValues).then((valid) => {
+      setDisabledButton(!valid);
     });
   }, [formValues]);
 
@@ -33,7 +54,7 @@ function OrderForm() {
   return (
     <div>
       <h2>Order Your Pizza</h2>
-      <form id="pizza-form">
+      <form id="pizza-form" onSubmit={formSubmit}>
         <label>
           Name:
           <input
@@ -53,19 +74,23 @@ function OrderForm() {
             value={formValues.size}
             id="size-dropdown"
           >
-            {/* Add your pizza size options here */}
+            <option value="">--Select a size--</option>
+            <option value="small">Small</option>
+            <option value="medium">Medium</option>
+            <option value="large">Large</option>
+            <option value="extra-large">Extra Large</option>
           </select>
           {errors.size.length > 0 && <div>{errors.size}</div>}
         </label>
         <label>
-        {toppings.map((topping, index) => (
-        <label key={index}>
-          {topping}
-        <input type="checkbox" name={`topping-${index}`} />
-      </label>
-              ))}
+          {toppings.map((topping, index) => (
+            <label key={index}>
+              {topping}
+              <input type="checkbox" name={`topping-${index}`} />
+            </label>
+          ))}
           Special Instructions:
-          <textarea
+          <input
             name="special"
             onChange={onFormChange}
             value={formValues.special}
@@ -76,6 +101,7 @@ function OrderForm() {
         <button type="submit" disabled={disabledButton}>
           Submit
         </button>
+        
       </form>
     </div>
   );

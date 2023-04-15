@@ -1,31 +1,81 @@
-import React from 'react';
-/*   √ Homepage at "/" route, has link or button with #order-pizza (37 ms)                                                                 
-    √ From homepage "/" route, click #order-pizza, navigate to "/pizza" route (30 ms)                                                     
-    √ The "/pizza" route has a form with #pizza-form (6 ms)          
-    × Form has name text input with #name-input (9 ms)               
-    × Form has validation for #name-input with error message "name must be at least 2 characters" (15 ms)                                 
-    × Form has pizza size dropdown with #size-dropdown (14 ms)       
-    × Form has toppings checklist with at least 4 options (10 ms)    
-    × Form has special instructions input with #special-text (8 ms)  
-    × Fill out #pizza-form, submit #pizza-form with data to https://reqres.in/api/orders (131 ms) 
-         
-   
-    const initialFormValues = 
-    name: string,
-    size: string,
-    topping1: bool,
-    topping2: bool,
-    special: string,
-    */
+import React, { useEffect, useState } from 'react';
+import { orderValidationSchema } from './validationSchema';
+
+const initialFormValues = {
+  name: '',
+  size: '',
+  special: '',
+};
+
+const initialFormErrors = {
+  name: '',
+  size: '',
+  special: '',
+};
 
 function OrderForm() {
+  const [formValues, setFormValues] = useState(initialFormValues);
+  const [disabledButton, setDisabledButton] = useState(true);
+  const [errors, setErrors] = useState(initialFormErrors);
+
+  const onFormChange = (e) => {
+    setFormValues({ ...formValues, [e.target.name]: e.target.value });
+  };
+
+  useEffect(() => {
+    orderValidationSchema.isValid(formValues).then((res) => {
+      setDisabledButton(!res);
+    });
+  }, [formValues]);
+
+  const toppings = ['Pepperoni', 'Mushrooms', 'Onions', 'Sausage'];
+
   return (
     <div>
       <h2>Order Your Pizza</h2>
       <form id="pizza-form">
         <label>
-          <input id="name-input"></input>
+          Name:
+          <input
+            name="name"
+            type="text"
+            onChange={onFormChange}
+            value={formValues.name}
+            id="name-input"
+          />
+          {errors.name.length > 0 && <div>{errors.name}</div>}
         </label>
+        <label>
+          Size:
+          <select
+            name="size"
+            onChange={onFormChange}
+            value={formValues.size}
+            id="size-dropdown"
+          >
+            {/* Add your pizza size options here */}
+          </select>
+          {errors.size.length > 0 && <div>{errors.size}</div>}
+        </label>
+        <label>
+        {toppings.map((topping, index) => (
+        <label key={index}>
+          {topping}
+        <input type="checkbox" name={`topping-${index}`} />
+      </label>
+              ))}
+          Special Instructions:
+          <textarea
+            name="special"
+            onChange={onFormChange}
+            value={formValues.special}
+            id="special-text"
+          />
+          {errors.special.length > 0 && <div>{errors.special}</div>}
+        </label>
+        <button type="submit" disabled={disabledButton}>
+          Submit
+        </button>
       </form>
     </div>
   );

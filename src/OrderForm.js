@@ -5,12 +5,20 @@ import axios from 'axios';
 const initialFormValues = {
   name: '',
   size: '',
+  pepperoni: false,
+  mushrooms: false,
+  onions: false,
+  sausage: false,
   special: '',
 };
 
 const initialFormErrors = {
   name: '',
   size: '',
+  pepperoni: false,
+  mushrooms: false,
+  onions: false,
+  sausage: false,
   special: '',
 };
 
@@ -18,20 +26,34 @@ function OrderForm() {
   const [formValues, setFormValues] = useState(initialFormValues);
   const [disabledButton, setDisabledButton] = useState(true);
   const [errors, setErrors] = useState(initialFormErrors);
+  //const [orders, setorders] = useState([]);
 
-  const formSubmit = (e) => {
+  /*const formSubmit = e => {
     e.preventDefault();
-    console.log('submitted!');
+    
     axios
-      .post('https://reqres.in/api/orders', formValues)
-      .then((res) => {
-        console.log('success', res);
+      .post("https://reqres.in/api/orders", formValues)
+      .then(res => {
+        console.log("success", res);
       })
-      .catch((err) => console.log(err.response));
+      .catch(err => console.log(err.response));
   };
+*/
+const onFormSubmit = (e) => {
+  e.preventDefault();
+  console.log(formValues, 'formValues')
+  axios.post('https://reqres.in/api/orders', formValues)
+  .then(res => {
+    console.log(res)
+    
+  })
+  .catch(err => console.error(err))
+  .finally(() => setFormValues(initialFormValues))
+}
 
   const onFormChange = (e) => {
     const { name, value } = e.target;
+    
     orderValidationSchema
       .validateAt(name, { ...formValues, [name]: value })
       .then(() => {
@@ -40,7 +62,7 @@ function OrderForm() {
       .catch((error) => {
         setErrors({ ...errors, [name]: error.errors[0] });
       });
-    setFormValues({ ...formValues, [name]: value });
+    setFormValues({ ...formValues, [name]: e.target.type === 'checkbox' ? e.target.checked : e.target.value });
   };
 
   useEffect(() => {
@@ -54,7 +76,7 @@ function OrderForm() {
   return (
     <div>
       <h2>Order Your Pizza</h2>
-      <form id="pizza-form" onSubmit={formSubmit}>
+      <form id="pizza-form" onSubmit={onFormSubmit}>
         <label>
           Name:
           <input
@@ -86,12 +108,18 @@ function OrderForm() {
           {toppings.map((topping, index) => (
             <label key={index}>
               {topping}
-              <input type="checkbox" name={`topping-${index}`} />
+              <input
+                type="checkbox"
+                name={topping.toLowerCase()}
+                onChange={onFormChange}
+                checked={formValues[topping.toLowerCase()]}
+    />
             </label>
           ))}
           Special Instructions:
           <input
             name="special"
+            type='text'
             onChange={onFormChange}
             value={formValues.special}
             id="special-text"

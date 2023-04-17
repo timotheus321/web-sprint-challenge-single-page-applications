@@ -15,10 +15,6 @@ const initialFormValues = {
 const initialFormErrors = {
   name: '',
   size: '',
-  pepperoni: false,
-  mushrooms: false,
-  onions: false,
-  sausage: false,
   special: '',
 };
 
@@ -39,10 +35,12 @@ function OrderForm() {
       .catch(err => console.log(err.response));
   };
 */
-const onFormSubmit = (e) => {
+  const onFormSubmit = (e) => {
+  
   e.preventDefault();
   console.log(formValues, 'formValues')
   axios.post('https://reqres.in/api/orders', formValues)
+  
   .then(res => {
     console.log(res)
     
@@ -51,7 +49,8 @@ const onFormSubmit = (e) => {
   .finally(() => setFormValues(initialFormValues))
 }
 
-  const onFormChange = (e) => {
+
+    const onFormChange = (e) => {
     const { name, value } = e.target;
     
     orderValidationSchema
@@ -65,13 +64,14 @@ const onFormSubmit = (e) => {
     setFormValues({ ...formValues, [name]: e.target.type === 'checkbox' ? e.target.checked : e.target.value });
   };
 
+
   useEffect(() => {
     orderValidationSchema.isValid(formValues).then((valid) => {
       setDisabledButton(!valid);
     });
   }, [formValues]);
 
-  const toppings = ['Pepperoni', 'Mushrooms', 'Onions', 'Sausage'];
+  const toppings = ['Pepperoni', 'Mushrooms', 'onions', 'Sausage'];
 
   return (
     <div>
@@ -113,23 +113,22 @@ const onFormSubmit = (e) => {
                 name={topping.toLowerCase()}
                 onChange={onFormChange}
                 checked={formValues[topping.toLowerCase()]}
-    />
+              />
             </label>
           ))}
-          Special Instructions:
+           Here are the special instructions:
           <input
             name="special"
-            type='text'
+            type="text"
             onChange={onFormChange}
             value={formValues.special}
             id="special-text"
           />
           {errors.special.length > 0 && <div>{errors.special}</div>}
         </label>
-        <button type="submit" disabled={disabledButton}>
+        <button type="submit" disabled={disabledButton} id="order-button">
           Submit
         </button>
-        
       </form>
     </div>
   );

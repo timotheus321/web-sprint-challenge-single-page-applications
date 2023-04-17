@@ -362,7 +362,6 @@ if (routerVersionNum === 6) {
       expect(toppingsChecklist[2]).toBeChecked()
       expect(screen.getByDisplayValue(/Here are the special instructions/i)).toBeInTheDocument()
 
-
       const testOrder = {}
       testOrder[nameInput.name] = nameInput.value
       testOrder[sizeDropdown.name] = sizeDropdown.value
